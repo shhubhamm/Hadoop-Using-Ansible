@@ -1,0 +1,110 @@
+- name: Configuring HADOOP NameNode
+  hosts: namenode
+  vars_prompt:
+    - name: name_port
+      prompt: Please Enter The Port Number On Which You Want To Run Hadoop Master Service
+      private: no
+
+    - name: name_dir
+      prompt: Please Enter The Directory Location for The Name Node
+      private: no
+  tasks:
+    - name: Creating Directory For NameNode
+      file:
+        state: directory
+        path: "{{ name_dir }}"
+
+    - name: Copying Hadoop RPM
+      copy:
+        src: "/tmp/hadoop-1.2.1-1.x86_64.rpm"
+        dest: "/tmp/hadoop-1.2.1-1.x86_64.rpm"
+
+    - name: Copying JDK RPM
+      copy:
+        src: "/tmp/jdk-8u171-linux-x64.rpm"
+        dest: "/tmp/jdk-8u171-linux-x64.rpm"
+
+    - name: Installing Hadoop
+      command:
+        cmd: "rpm -i /tmp/hadoop-1.2.1-1.x86_64.rpm --force"
+      ignore_errors: yes
+
+    - name: Installing JDK
+      command:
+        cmd: "rpm -i /tmp/jdk-8u171-linux-x64.rpm"
+      ignore_errors: yes
+
+    - name: Copying HDFS Configuration File
+      template:
+        src: "name_hdfs"
+        dest: "/etc/hadoop/hdfs-site.xml"
+
+    - name: Copying CORE Configuration File
+      template:
+        src: "core"
+        dest: "/etc/hadoop/core-site.xml"
+
+    - name: Formatting The NameNode Directory
+      command:
+        cmd: "hadoop namenode -format -force"
+
+    - name: Starting The NameNode Service
+      command:
+        cmd: "hadoop-daemon.sh start namenode"
+      ignore_errors: yes
+
+- name: Configuring HADOOP DataNode
+  hosts: datanodes
+  vars_prompt:
+  - name: name_port
+    prompt: Please Enter The Port Number On Which NameNode Services are Running
+    private: no
+
+  - name: name_ip
+    prompt: Please Enter The IP Address of The NameNode
+    private: no
+
+  - name: data_dir
+    prompt: Please Enter The Directory Location for The DataNode
+    private: no
+
+  tasks:
+    - name: Creating Directory For DataNode
+      file:
+        state: directory
+        path: "{{ data_dir }}"
+
+    - name: Copying Hadoop RPM
+      copy:
+        src: "/tmp/hadoop-1.2.1-1.x86_64.rpm"
+        dest: "/tmp/hadoop-1.2.1-1.x86_64.rpm"
+
+    - name: Copying JDK RPM
+      copy:
+        src: "/tmp/jdk-8u171-linux-x64.rpm"
+        dest: "/tmp/jdk-8u171-linux-x64.rpm"
+
+    - name: Installing Hadoop
+      command:
+        cmd: "rpm -i /tmp/hadoop-1.2.1-1.x86_64.rpm --force"
+      ignore_errors: yes
+
+    - name: Installing JDK
+      command:
+        cmd: "rpm -i /tmp/jdk-8u171-linux-x64.rpm"
+      ignore_errors: yes
+
+    - name: Copying HDFS Configuration File
+      template:
+        src: "data_hdfs"
+        dest: "/etc/hadoop/hdfs-site.xml"
+
+    - name: Copying CORE Configuration File
+      template:
+        src: "data_core"
+        dest: "/etc/hadoop/core-site.xml"
+
+    - name: Starting The DataNode Service
+      command:
+        cmd: "hadoop-daemon.sh start datanode"
+      ignore_errors: yes
