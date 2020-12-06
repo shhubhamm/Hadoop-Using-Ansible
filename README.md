@@ -5,7 +5,7 @@ The agenda of this task is to:
 “Configure Hadoop and start cluster services using Ansible Playbook”
 NOTE: I HAVE USED RHEL8 TO PERFORM THE ABOVE TASK.
 
-To get a complete overview of this above task, please have a look at the above article:
+To get a complete overview of this above task, please have a look at the above article: https://www.linkedin.com/posts/shubham-mehta-b09335188_hadoop-bigdata-ansible-activity-6741458191646892032-t0_R
 
 
 To Download the Hadoop V1 and JDK8 for RHEL8, you can follow the above links:
